@@ -1,0 +1,37 @@
+type BrokerLog {
+    id: ID!
+    brokerId: ID @rename(attribute: "broker_id")
+    accountTypeId: ID @rename(attribute: "account_type_id")
+    typeLog: BrokerLogType @rename(attribute: "type_log")
+    updatedAt: DateTime @rename(attribute: "updated_at")
+    userType: UserType @rename(attribute: "user_type")
+    accountTypeName: String @rename(attribute: "account_type_name")
+    accountTypeDeletedStatus: Boolean @rename(attribute: "account_type_deleted_status")
+    deletingMode: Boolean @rename(attribute: "deleting_mode")
+    changes: String
+    logData: LogData @rename(attribute: "log_data")
+}
+
+extend type Query @guard {
+    brokerLog(brokerLogId: ID!): BrokerLog! @manager @field(resolver: "App\\GraphQL\\Queries\\BrokerLogQuery@getBrokerLog")
+}
+
+
+type Query {
+    loginAdmin(
+        email: String! @rules(apply: ["required", "email"]),
+        password: String! @rules(apply: ["required", "min:3"])
+        rememberMe: Boolean
+    ): ResultLogin @field(resolver: "App\\GraphQL\\Queries\\AdminQuery@loginAdmin")
+
+    authLink(inviteToken: String!): ResultAuthLink @field(resolver: "App\\GraphQL\\Queries\\InviteLinkQuery@authLink")
+    checkRecaptcha(token: String!): Boolean @field(resolver: "App\\GraphQL\\Queries\\CheckRecaptchaQuery@check")
+}
+
+type Mutation @guard {
+
+    rollbackBrokerLog(
+        inputData: BrokerInput!,
+        brokerLogId: ID! @rules(apply: ["required"])
+    ): Broker @manager @field(resolver: "App\\GraphQL\\Mutations\\BrokerLogMutator@rollback")
+}

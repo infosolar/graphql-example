@@ -1,0 +1,13 @@
+type Mutation {
+      addPublicityInquiry(
+            language: String!
+            type_publicity_orders: [TypePublicityOrder]!
+            sender_name: String!
+            email: String!
+            reference: String
+            text_message: String!
+            recaptcha: String!
+        ): Feedback! @recaptcha
+                     @field(resolver: "App\\GraphQL\\Mutations\\Content\\PublicityQuery@addPublicityInquiry")
+                     @validator
+}
